@@ -16,7 +16,7 @@ application = Flask(__name__)
 
 @application.route('/')
 def hello_world():
-    return "Inovasi Informatika Indonesia Python App! v.1.1-Beta\r\n", 200, { 'Content-Type': 'text/plain' }
+    return "Inovasi Informatika Indonesia Python App!\r\n", 200, { 'Content-Type': 'text/plain' }
 
 if __name__ == '__main__':
     application.run(debug = True)
