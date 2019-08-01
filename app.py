@@ -19,7 +19,8 @@ def hello(name):
 "'Mathematics is the key and door to the sciences.' -- Galileo Galilei",
 "'Not everyone will understand your journey. Thats fine. Its not their journey to make sense of. Its yours.' -- Unknown"  ]
     randomNumber = randint(0,len(quotes)-1)
-    quote = quotes[randomNumber] </string:name></string:name>
+    quote = quotes[randomNumber]
+    </string:name></string:name>
 
 return render_template(
     'test.html',**locals())
