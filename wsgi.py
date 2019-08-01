@@ -1,3 +1,5 @@
+# Copyright (c) 2015 Pepijn Oomen <oomen@piprograms.com>
+#
 # This is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +18,6 @@ application = Flask(__name__)
 
 @application.route('/')
 def hello_world():
-    return "Inovasi Informatika Indonesia Python App!\r\n", 200, { 'Content-Type': 'text/plain' }
-
+    return render_template('index.html')
 if __name__ == '__main__':
     application.run(debug = True)
