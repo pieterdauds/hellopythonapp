@@ -8,7 +8,7 @@ def index():
     return "Flask App!"
 
 #@app.route("/hello/<string:name>")
-@app.route("/<string:name>/")
+@app.route('/')
 def hello(name):
 
 
