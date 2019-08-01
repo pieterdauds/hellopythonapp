@@ -21,8 +21,7 @@ def hello(name):
     randomNumber = randint(0,len(quotes)-1)
     quote = quotes[randomNumber]
 #</string:name></string:name>
-
-return render_template('test.html',**locals())
+    return render_template('test.html',**locals())
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
