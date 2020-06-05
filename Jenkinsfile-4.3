@@ -48,7 +48,7 @@ pipeline{
 			}	
 		}
 		stage('approval (test)') {
-			input message: 'Approve for testing?',
+			input 'Approve for testing?',
 			id: 'approval'
 		}
 		stage ("Deploy Testing") {
@@ -59,7 +59,7 @@ pipeline{
 			}
 		}
 		stage('approval (production)') {
-			input message: 'Approve for production?',
+			input 'Approve for production?',
 			id: 'approval'
 		}
 		stage ("Deploy Production") {
