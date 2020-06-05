@@ -15,7 +15,7 @@ def buildImage(cluster_name, env_name) {
 def tagImage(cluster_name, env_name, action) {
 	openshift.withCluster( cluster_name ) {
 		openshift.withProject( env_name ) {
-			if (action == 'test') {
+			if (action == 'testing') {
 				echo "Tag image from development to testing."
 				openshift.tag("development/hellopythonapp:latest", "testing/hellopythonapp:test")
 				def dc = openshift.selector('dc', "hellopythonapp")
