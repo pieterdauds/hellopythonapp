@@ -36,8 +36,8 @@ pipeline{
 	environemnt{
 		def CLUSTER_NAME = "openshift-4.3"
 		def ENV_DEV = "development"
-		def ENV_TEST = " "testing"
-		def ENV_PROD = " "production"
+		def ENV_TEST = "testing"
+		def ENV_PROD = "production"
 	}
 	stages{
 		stage (Deploy Development) {
