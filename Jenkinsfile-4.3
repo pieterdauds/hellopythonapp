@@ -1,73 +1,73 @@
-	def buildImage(cluster_name, env_name) {
-		openshift.withCluster( cluster_name ) {
-			openshift.withProject( env_name ) {
-				echo "Building Image Stream from binary target\\${file_name}."
-				
-				def result = openshift.selector("bc", "hellopythonapp").startBuild("--follow")
-				echo "Build result: ${result.status}"
-				
+def buildImage(cluster_name, env_name) {
+	openshift.withCluster( cluster_name ) {
+		openshift.withProject( env_name ) {
+			echo "Building Image Stream from binary target\\${file_name}."
+			
+			def result = openshift.selector("bc", "hellopythonapp").startBuild("--follow")
+			echo "Build result: ${result.status}"
+			
+			def dc = openshift.selector('dc', "hellopythonapp")
+			dc.rollout().status()
+		}
+	}
+}
+
+def tagImage(cluster_name, env_name, action) {
+	openshift.withCluster( cluster_name ) {
+		openshift.withProject( env_name ) {
+			if (action == 'test') {
+				echo "Tag image from development to testing."
+				openshift.tag("development/hellopythonapp:latest", "testing/hellopythonapp:latest")
+				def dc = openshift.selector('dc', "hellopythonapp")
+				dc.rollout().status()
+			}
+			if (action == 'production') {
+				echo "Tag image from testing to production."
+				openshift.tag("testing/hellopythonapp:latest", "production/hellopythonapp:latest")
 				def dc = openshift.selector('dc', "hellopythonapp")
 				dc.rollout().status()
 			}
 		}
 	}
+}
 
-	def tagImage(cluster_name, env_name, action) {
-		openshift.withCluster( cluster_name ) {
-			openshift.withProject( env_name ) {
-				if (action == 'test') {
-					echo "Tag image from development to testing."
-					openshift.tag("development/hellopythonapp:latest", "testing/hellopythonapp:latest")
-					def dc = openshift.selector('dc', "hellopythonapp")
-					dc.rollout().status()
+pipeline{
+	agent any
+	environemnt{
+		def CLUSTER_NAME = "openshift-4.3"
+		def ENV_DEV = "development"
+		def ENV_TEST = "testing"
+		def ENV_PROD = "production"
+	}
+	stages{
+		stage ("Deploy Development") {
+			steps {
+				script {
+					buildImage(CLUSTER_NAME,ENV_DEV)
 				}
-				if (action == 'production') {
-					echo "Tag image from testing to production."
-					openshift.tag("testing/hellopythonapp:latest", "production/hellopythonapp:latest")
-					def dc = openshift.selector('dc', "hellopythonapp")
-					dc.rollout().status()
+			}	
+		}
+		stage('approval (test)') {
+			input message: 'Approve for testing?',
+			id: 'approval'
+		}
+		stage ("Deploy Testing") {
+			steps {
+				script {
+					tagImage(CLUSTER_NAME, ENV_TEST, 'testing')
+				}
+			}
+		}
+		stage('approval (production)') {
+			input message: 'Approve for production?',
+			id: 'approval'
+		}
+		stage ("Deploy Production") {
+			steps {
+				script {
+					tagImage(CLUSTER_NAME, ENV_TEST, 'production')
 				}
 			}
 		}
 	}
-
-	pipeline{
-		agent any
-		environemnt{
-			def CLUSTER_NAME = "openshift-4.3"
-			def ENV_DEV = "development"
-			def ENV_TEST = "testing"
-			def ENV_PROD = "production"
-		}
-		stages{
-			stage ("Deploy Development") {
-				steps {
-					script {
-						buildImage(CLUSTER_NAME,ENV_DEV)
-					}
-				}	
-			}
-			stage('approval (test)') {
-				input message: 'Approve for testing?',
-				id: 'approval'
-			}
-			stage ("Deploy Testing") {
-				steps {
-					script {
-						tagImage(CLUSTER_NAME, ENV_TEST, 'testing')
-					}
-				}
-			}
-			stage('approval (production)') {
-				input message: 'Approve for production?',
-				id: 'approval'
-			}
-			stage ("Deploy Production") {
-				steps {
-					script {
-						tagImage(CLUSTER_NAME, ENV_TEST, 'production')
-					}
-				}
-			}
-		}
-	}
+}
