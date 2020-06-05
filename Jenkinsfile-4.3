@@ -1,7 +1,7 @@
 def buildImage(cluster_name, env_name) {
 	openshift.withCluster( cluster_name ) {
 		openshift.withProject( env_name ) {
-			echo "Building Image Stream from binary target\\${file_name}."
+			echo "Building Image Stream from hellopythonapp"
 			
 			def result = openshift.selector("bc", "hellopythonapp").startBuild("--follow")
 			echo "Build result: ${result.status}"
