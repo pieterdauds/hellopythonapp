@@ -40,14 +40,14 @@ pipeline{
 		def ENV_PROD = "production"
 	}
 	stages{
-		stage (Deploy Development) {
+		stage ("Deploy Development") {
 			buildImage(CLUSTER_NAME,ENV_DEV)
 		}
 		stage('approval (test)') {
 			input message: 'Approve for testing?',
 			id: 'approval'
 		}
-		stage (Deploy Testing) {
+		stage ("Deploy Testing") {
 			tagImage(CLUSTER_NAME, ENV_TEST, 'testing')
 			
 		}
@@ -55,7 +55,7 @@ pipeline{
 			input message: 'Approve for production?',
 			id: 'approval'
 		}
-		stage (Deploy Production) {
+		stage ("Deploy Production") {
 			tagImage(CLUSTER_NAME, ENV_TEST, 'production')
 			
 		}
