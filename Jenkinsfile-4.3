@@ -67,7 +67,7 @@ pipeline{
 		stage ("Deploy Production") {
 			steps {
 				script {
-					tagImage(CLUSTER_NAME, ENV_TEST, 'production')
+					tagImage(CLUSTER_NAME, ENV_PROD, 'production')
 				}
 			}
 		}
