@@ -17,13 +17,13 @@ def tagImage(cluster_name, env_name, action) {
 		openshift.withProject( env_name ) {
 			if (action == 'testing') {
 				echo "Tag image from development to testing."
-				openshift.tag("demo-development/hellopythonapp:latest", "testing/hellopythonapp:test")
+				openshift.tag("development/hellopythonapp:latest", "testing/hellopythonapp:test")
 				def dc = openshift.selector('dc', "hellopythonapp")
 				dc.rollout().status()
 			}
 			if (action == 'production') {
 				echo "Tag image from testing to production."
-				openshift.tag("demo-testing/hellopythonapp:test", "production/hellopythonapp:prod")
+				openshift.tag("testing/hellopythonapp:test", "production/hellopythonapp:prod")
 				def dc = openshift.selector('dc', "hellopythonapp")
 				dc.rollout().status()
 			}
@@ -35,9 +35,9 @@ pipeline{
 	agent any
 	environment{
 		def CLUSTER_NAME = "openshift-4.3"
-		def ENV_DEV = "demo-development"
-		def ENV_TEST = "demo-testing"
-		def ENV_PROD = "dmeo-production"
+		def ENV_DEV = "development"
+		def ENV_TEST = "testing"
+		def ENV_PROD = "production"
 	}
 	stages{
 		stage ("Deploy Development") {
